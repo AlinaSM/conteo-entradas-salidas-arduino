@@ -125,8 +125,23 @@ Date.prototype.format = function(mask, utc) {
 };
 
 
+//Conexion a mySql
+var mysql = require('mysql');
 
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'arduino-puerta'
+});
 
+connection.connect(function(error){
+    if(!!error){
+        console.log('Error');
+    }else{
+        console.log('Connected');
+    }
+});
 //Parte del servidor
 const http = require('http');
 const express = require('express');
@@ -136,6 +151,9 @@ var date = new Date();
 const app = express();
 const server = http.createServer(app);
 const io = socketIO.listen(server);
+
+app.use(express.static(__dirname + '/public'));
+
 
 server.listen(3000, function(){
     console.log('Server listening on port ', 3000);
@@ -157,11 +175,16 @@ parser.on('open', function(){
 });
 
 parser.on('data',function(data){
-    var sqlDateStr = new Date().format("yyyy-mm-dd hh:MM:ss");
-    console.log(data);
-    console.log(sqlDateStr);
-    io.emit('state-door', data);
-    io.emit('date-time' , date.getDate());
+    let sqlDateStr = new Date().format("yyyy-mm-dd hh:MM:ss");
+    let sql = "INSERT INTO `puerta-estado` (`accion`, `fecha-tiempo`) VALUES ('"+data+"', '"+sqlDateStr+"');";
+    connection.query(sql, function(error, result){
+        if(error)
+            throw error;
+        console.log('un dato insertado');
+    });
+
+    io.emit('sql', sql);
+    
 });
 
 port.on('error', function(err){
