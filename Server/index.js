@@ -157,7 +157,7 @@ parser.on('open', function(){
 });
 
 parser.on('data',function(data){
-    var sqlDateStr = new Date().format("yyyy-mm-dd hh-MM-ss");
+    var sqlDateStr = new Date().format("yyyy-mm-dd hh:MM:ss");
     console.log(data);
     console.log(sqlDateStr);
     io.emit('state-door', data);
