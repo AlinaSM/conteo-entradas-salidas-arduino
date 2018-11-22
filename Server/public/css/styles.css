@@ -1,0 +1,40 @@
+:root {
+    --main-color: #233D7B;
+    --second-color: #3757a1; 
+}
+
+*{
+    padding: 0;
+}
+
+.logo-hd{
+    width: 150px;
+    border: 1px none;
+}
+
+.title-hd{
+    background-color: var(--main-color);
+    padding: .5%;
+    color: whitesmoke;
+}
+
+.cont-hd{
+    padding: 1%;
+}
+
+.sc-color{
+    color: var(--second-color);
+    font-size: 20px;
+}
+
+.font-edit{
+    font-size:30px;
+    color: var(--second-color);
+}
+
+.btnStyleMain{
+    background-color: var(--main-color);
+    border: none;
+
+}
+
