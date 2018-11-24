@@ -8,6 +8,8 @@
     <link rel='stylesheet' href='css/bootstrap.min.css'>
     <link rel='stylesheet' href='css/styles.css'>
     <link rel="stylesheet" href="css/daterangepicker.css">
+
+    
 </head>
 <body>
 
@@ -37,6 +39,8 @@
         <div class="row">
             <div class="col-3">
                 <h3 class="text-center font-edit">Opciones de Visualizacion</h3>
+                <input type="text"  class="form-control" name="datetimes" />
+                <button type="button" class="btn btn-primary btnStyleMain" id="btnMostarGrafica" >Mostrar Valores</button>
             </div>
             <div class="col-9">
                 <h2 class="text-center font-edit">Grafica</h2>
@@ -51,5 +55,19 @@
     <script src='js/bootstrap.min.js'></script>
     <script src="js/moment.min.js"></script>
     <script src="js/daterangepicker.min.js"></script>
+    
+    <script>
+        $(function() {
+          $('input[name="datetimes"]').daterangepicker({
+            timePicker: true,
+            startDate: moment().startOf('hour'),
+            endDate: moment().startOf('hour').add(32, 'hour'),
+            locale: {
+              format: 'M/DD hh:mm A'
+            }
+          });
+        });
+    </script>
+
 </body>
 </html>

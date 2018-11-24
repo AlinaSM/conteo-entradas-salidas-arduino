@@ -5,16 +5,17 @@
 
 *{
     padding: 0;
+    margin: 0;
 }
 
 .logo-hd{
-    width: 150px;
+    width: 130px;
     border: 1px none;
 }
 
 .title-hd{
     background-color: var(--main-color);
-    padding: .5%;
+    padding: .7%;
     color: whitesmoke;
 }
 
@@ -35,6 +36,11 @@
 .btnStyleMain{
     background-color: var(--main-color);
     border: none;
-
+    margin: 15px 50px;
+    padding: 20px 40px;
+    font-size: 20px;
 }
 
+.form-control{
+    margin: 40px 20px;
+}
