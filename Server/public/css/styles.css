@@ -37,8 +37,9 @@
     background-color: var(--main-color);
     border: none;
     margin: 15px 50px;
-    padding: 20px 40px;
-    font-size: 20px;
+    padding: 6% 4%;
+    width: 70%;
+    font-size: 80%;
 }
 
 .form-control{

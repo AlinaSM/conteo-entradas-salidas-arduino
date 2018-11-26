@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,9 @@
     <link rel='stylesheet' href='css/styles.css'>
     <link rel="stylesheet" href="css/daterangepicker.css">
 
-    
+
 </head>
+
 <body>
 
     <div class="container-fluid ">
@@ -26,48 +28,76 @@
                     <img src="img/TecNM.png" alt="..." class="img-thumbnail logo-hd">
                 </div>
                 <div class="col-8">
-                    <h6 class="text-center sc-color"> Sistemas Programables </h6> 
+                    <h6 class="text-center sc-color"> Sistemas Programables </h6>
                     <h6 class="text-center sc-color">Instituto Tecnológico de Acapulco</h6>
                 </div>
                 <div class="col-2">
                     <!-- Imagen del ITA -->
                     <img src="img/ITA.png" alt="..." class="img-thumbnail logo-hd">
                 </div>
-            </div>  
+            </div>
         </header>
 
         <div class="row">
             <div class="col-3">
                 <h3 class="text-center font-edit">Opciones de Visualizacion</h3>
-                <input type="text"  class="form-control" name="datetimes" />
-                <button type="button" class="btn btn-primary btnStyleMain" id="btnMostarGrafica" >Mostrar Valores</button>
-            </div>
+
+                <label for="daterange">Rango de Tiempo</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                      Dia
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                      Semana
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                    <label class="form-check-label" for="exampleRadios1">
+                      Mes
+                    </label>
+                  </div>
+                    
+                  <input type="text" name="calendario" value="11/01/2018" />
+                    <button type="button" class="btn btn-primary btnStyleMain" id="btnMostarGrafica">Mostrar Valores</button>
+                
+                   </div>
             <div class="col-9">
                 <h2 class="text-center font-edit">Grafica</h2>
-                <canvas id="miGrafica"></canvas>
+                <canvas id="miGrafica" class="chartjs-render-monitor" style="display: block; width: 300px; height: 100px;"></canvas>
             </div>
         </div>
     </div>
-    <script src="/socket.io/socket.io.js"></script> 
-    <script src="main.js"></script>   
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
     <script src='js/jquery.slim.min.js'></script>
     <script src='js/popper.min.js'></script>
     <script src='js/bootstrap.min.js'></script>
     <script src="js/moment.min.js"></script>
     <script src="js/daterangepicker.min.js"></script>
-    
+    <script src="js/Chart.min.js"></script>
+    <script src="js/grafica.js"></script>
     <script>
         $(function() {
-          $('input[name="datetimes"]').daterangepicker({
-            timePicker: true,
-            startDate: moment().startOf('hour'),
-            endDate: moment().startOf('hour').add(32, 'hour'),
-            locale: {
-              format: 'M/DD hh:mm A'
-            }
-          });
+        $('input[name="calendario"]').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            "showWeekNumbers": true,
+            minYear: 2000,
+        }, function(start, end, label) {
+            //var years = moment().diff(start, 'years');
+           // alert("You are " + years + " years old!");
         });
+        });
+
+
+        
     </script>
 
 </body>
+
 </html>
