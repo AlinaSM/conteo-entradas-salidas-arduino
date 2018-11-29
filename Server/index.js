@@ -21,8 +21,11 @@ Date.prototype.getThisWeek = function(thisTime = "") {
                           - 3 + (week1.getDay() + 6) % 7) / 7);
   }
 
+  var tiempo = new Date();   
+  var diasDelaSemana = ['Lunes','Martes', 'Miercoles', 'Jueves','Viernes', 'Sabado'];
+  var mesesDelAnio = ['Enero','Febrero', 'Marzo', 'Abril','Mayo', 'Junio',
+                      'Julio','Agosto', 'Septiembre', 'Octubre','Noviembre', 'Diciembre'];
   
-
 //Conexion a mySql
 var mysql = require('mysql');
 
@@ -53,12 +56,47 @@ const io = socketIO.listen(server);
 
 app.use(express.static(__dirname + '/public'));
 
+io.on("mensajeRecivido", function(data){
+    console.log(data);
+    io.emit("mostrarMensaje", data);
+
+});
 
 server.listen(3000, function(){
     console.log('Server listening on port ', 3000);
 });
 
+io.on("connection", function(socket){
+    
+    socket.on('parametrosGraficar', function(data){
+        
+        let consulta;
+        let numeroSemana = tiempo.getThisWeek(data['mesSeleccionado']+" "+data['diaSeleccionado']+", "+data['anioSeleccionado']+" 0:0:0");
+        if(data['tiempoGraficar'] == "dia"){
+            consulta = "SELECT hora , count(estado) AS frecuencia FROM puerta WHERE dia = "+data['diaSeleccionado']+
+                        " AND mes = '"+mesesDelAnio[data['mesSeleccionado'] - 1]
+                        +"' AND estado like 'entrada%' GROUP BY hora;";
+        }else if( data['tiempoGraficar'] == "semana" ){
+            consulta = "SELECT dia_semana, count(estado) AS frecuencia FROM puerta WHERE numero_semana = '"+numeroSemana+
+                        "' and estado like 'entrada%'GROUP BY dia_semana;"
+        }else if( data['tiempoGraficar'] == "mes" ){
+            consulta =  "SELECT dia_semana, count(estado) AS frecuencia FROM puerta "+
+                            "WHERE mes = '"+mesesDelAnio[data['mesSeleccionado'] - 1]+"' and estado like 'entrada%' "+
+                            "GROUP BY dia_semana;";
+        }
 
+        connection.query(consulta, function (err, result, fields) {
+            if (err) throw err;
+            //console.log(result);
+            io.emit('infoMostrar', result);
+          });
+
+        
+    });
+
+});
+
+/*
 //Serial comunication 
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
@@ -74,11 +112,8 @@ parser.on('open', function(){
 });
 
 parser.on('data',function(data){
-    let tiempo = new Date(); 
-    let diasDelaSemana = ['Lunes','Martes', 'Miercoles', 'Jueves','Viernes', 'Sabado'];
-    let mesesDelAnio = ['Enero','Febrero', 'Marzo', 'Abril','Mayo', 'Junio',
-                        'Julio','Agosto', 'Septiembre', 'Octubre','Noviembre', 'Diciembre'];
     
+
     let sql = "INSERT INTO `puerta` (`estado`, `dia_semana`, `dia`, `mes`, `anio`, `hora`, `minuto`,"+
               " `segundo`, `numero_semana`) \n VALUES ('"+data+"', '"+ diasDelaSemana[tiempo.getDay() - 1] +
               "', "+tiempo.getDate()+", '"+ mesesDelAnio[tiempo.getMonth()] + "',"+tiempo.getFullYear()+", "+
@@ -96,4 +131,4 @@ parser.on('data',function(data){
 
 port.on('error', function(err){
     console.log('Error: '+ err);
-});
+});*/
