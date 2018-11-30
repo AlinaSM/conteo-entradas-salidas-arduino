@@ -56,7 +56,7 @@ const io = socketIO.listen(server);
 
 app.use(express.static(__dirname + '/public'));
 
-io.on("mensajeRecivido", function(data){
+io.on("mensajeRecibido", function(data){
     console.log(data);
     io.emit("mostrarMensaje", data);
 
@@ -73,14 +73,14 @@ io.on("connection", function(socket){
         let consulta;
         let numeroSemana = tiempo.getThisWeek(data['mesSeleccionado']+" "+data['diaSeleccionado']+", "+data['anioSeleccionado']+" 0:0:0");
         if(data['tiempoGraficar'] == "dia"){
-            consulta = "SELECT hora , count(estado) AS frecuencia FROM puerta WHERE dia = "+data['diaSeleccionado']+
+            consulta = "SELECT hora AS tiempoMedir , count(estado) AS frecuencia FROM puerta WHERE dia = "+data['diaSeleccionado']+
                         " AND mes = '"+mesesDelAnio[data['mesSeleccionado'] - 1]
                         +"' AND estado like 'entrada%' GROUP BY hora;";
         }else if( data['tiempoGraficar'] == "semana" ){
-            consulta = "SELECT dia_semana, count(estado) AS frecuencia FROM puerta WHERE numero_semana = '"+numeroSemana+
-                        "' and estado like 'entrada%'GROUP BY dia_semana;"
+            consulta = "SELECT dia_semana AS tiempoMedir, count(estado) AS frecuencia FROM puerta WHERE numero_semana = '"+numeroSemana+
+                        "' and estado like 'entrada%'GROUP BY dia_semana;";
         }else if( data['tiempoGraficar'] == "mes" ){
-            consulta =  "SELECT dia_semana, count(estado) AS frecuencia FROM puerta "+
+            consulta =  "SELECT dia_semana AS tiempoMedir, count(estado) AS frecuencia FROM puerta "+
                             "WHERE mes = '"+mesesDelAnio[data['mesSeleccionado'] - 1]+"' and estado like 'entrada%' "+
                             "GROUP BY dia_semana;";
         }
@@ -96,12 +96,12 @@ io.on("connection", function(socket){
 
 });
 
-/*
+
 //Serial comunication 
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 
-const port = new SerialPort('COM4',{
+const port = new SerialPort('COM3',{
     baudRate: 9600
 });
 
@@ -113,8 +113,12 @@ parser.on('open', function(){
 
 parser.on('data',function(data){
     
+/*
+    */
+   // console.log(data);
 
-    let sql = "INSERT INTO `puerta` (`estado`, `dia_semana`, `dia`, `mes`, `anio`, `hora`, `minuto`,"+
+    if( isNaN(data) ){
+        let sql = "INSERT INTO `puerta` (`estado`, `dia_semana`, `dia`, `mes`, `anio`, `hora`, `minuto`,"+
               " `segundo`, `numero_semana`) \n VALUES ('"+data+"', '"+ diasDelaSemana[tiempo.getDay() - 1] +
               "', "+tiempo.getDate()+", '"+ mesesDelAnio[tiempo.getMonth()] + "',"+tiempo.getFullYear()+", "+
               ( tiempo.getHours() + 1 )+", "+ tiempo.getMinutes() +", "+ tiempo.getSeconds() +","+tiempo.getThisWeek()+");";
@@ -126,9 +130,10 @@ parser.on('data',function(data){
     });
     
     io.emit('sql', sql);
+    }
     
 });
 
 port.on('error', function(err){
     console.log('Error: '+ err);
-});*/
+});
