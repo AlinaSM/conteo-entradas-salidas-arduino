@@ -69,7 +69,6 @@ server.listen(3000, function(){
 io.on("connection", function(socket){
     
     socket.on('parametrosGraficar', function(data){
-        
         let consulta;
         let numeroSemana = tiempo.getThisWeek(data['mesSeleccionado']+" "+data['diaSeleccionado']+", "+data['anioSeleccionado']+" 0:0:0");
         if(data['tiempoGraficar'] == "dia"){
@@ -84,14 +83,11 @@ io.on("connection", function(socket){
                             "WHERE mes = '"+mesesDelAnio[data['mesSeleccionado'] - 1]+"' and estado like 'entrada%' "+
                             "GROUP BY dia_semana;";
         }
-
         connection.query(consulta, function (err, result, fields) {
             if (err) throw err;
-            //console.log(result);
+            
             io.emit('infoMostrar', result);
           });
-
-        
     });
 
 });
@@ -112,22 +108,17 @@ parser.on('open', function(){
 });
 
 parser.on('data',function(data){
-    
-/*
-    */
-   // console.log(data);
-
     if( isNaN(data) ){
         let sql = "INSERT INTO `puerta` (`estado`, `dia_semana`, `dia`, `mes`, `anio`, `hora`, `minuto`,"+
               " `segundo`, `numero_semana`) \n VALUES ('"+data+"', '"+ diasDelaSemana[tiempo.getDay() - 1] +
               "', "+tiempo.getDate()+", '"+ mesesDelAnio[tiempo.getMonth()] + "',"+tiempo.getFullYear()+", "+
-              ( tiempo.getHours() + 1 )+", "+ tiempo.getMinutes() +", "+ tiempo.getSeconds() +","+tiempo.getThisWeek()+");";
+              ( tiempo.getHours()  )+", "+ tiempo.getMinutes() +", "+ tiempo.getSeconds() +","+tiempo.getThisWeek()+");";
               
     connection.query(sql, function(error, result){
         if(error)
             throw error;
-        //console.log('Dato insertado: '+ tiempo.getThisWeek(mes+" "+6+", "+2018+" 0:0:0"));
-    });
+            console.log(data);
+   });
     
     io.emit('sql', sql);
     }
